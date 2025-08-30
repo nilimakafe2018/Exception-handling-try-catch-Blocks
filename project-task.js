@@ -17,6 +17,13 @@ Instructions
 Start by Understanding the Errors:
 Run the program and observe the exceptions that occur. Document what the exceptions are and where they happen.
 
+Answer: 1. After i run the program, and when I add an animal with no name or neg fee,
+it will thron an error saying Error: Invalid animal name or adoption fee. And this happen inside addAnimal()
+
+2. Whe I check fee for an animal that does not exist, the program throw an error saying Error: Animal not found in records.
+And this happen inside getAdoptionFee()
+
+
 Write Exception Handling Code:
 Use try/catch blocks to handle the errors so the program doesn’t crash when incorrect input or unexpected situations occur.
 
@@ -32,8 +39,9 @@ const readlineSync = require('readline-sync');
 // Initial Code with Bugs (modified to use readline-sync)
 let animals = [];
 let fees = [];
+
 function addAnimal(name, fee) {
-    if (!name || fee < 0) {
+    if (!name || isNaN(fee) || fee < 0) {
         throw new Error("Invalid animal name or adoption fee!");
     }
     animals.push(name);
@@ -57,11 +65,26 @@ while (true) {
     if (action === "add") {
         let animal = readlineSync.question("Enter the animal's name: ");
         let fee = Number(readlineSync.question("Enter the adoption fee: "));
-        addAnimal(animal, fee);
-        console.log(`${animal} added with a fee of $${fee}.`);
-    } else if (action === "fee") {
-        let animal = readlineSync.question("Enter the animal's name to find its adoption fee: ");
-        console.log(`${animal}'s adoption fee is $${getAdoptionFee(animal)}.`);
+
+        try {
+
+            addAnimal(animal, fee);
+            console.log(`${animal} added with a fee of $${fee}.`);
+        } 
+        catch (err) {
+            console.log("Error: " + err.message);
+        }
+
+        } else if (action === "fee") {
+        let animal = readlineSync.question("Enter the animal's name to find its adoption fee: ").trim();
+
+        try {
+            let adoptionFee = getAdoptionFee(animal);
+            console.log(`${animal}'s adoption fee is $${adoptionFee}.`);
+        } catch (err) {
+            console.log("⚠️ Error: " + err.message);
+        }
+
     } else {
         console.log("Invalid action. Please choose 'add', 'fee', or 'exit'.");
     }
